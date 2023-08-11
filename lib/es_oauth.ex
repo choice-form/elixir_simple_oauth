@@ -1,0 +1,2 @@
+defmodule ESOauth do
+end
