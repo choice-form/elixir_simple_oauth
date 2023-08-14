@@ -1,5 +1,28 @@
 # SimpleOAuth
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/simple_oauth>.
+The following platform logins are supported:
+
+- Google
+
+## Configurations
+
+Setup runtime configuration.
+
+```elixir
+config :simple_oauth, [keyword configurations]
+```
+
+### Google
+
+```elixir
+config :simple_oauth,
+  [
+    google: [
+      client_id: {client_id},
+      client_secret: {client_secret},
+      host: {host},
+      scope: {scope}, # optional, default: "profile email"
+      callback_path: {callback_path}, default: "/oauth/google/callback"
+    ]
+  ]
+```
