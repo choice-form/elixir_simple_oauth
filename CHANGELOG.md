@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- [Deps] `hackney` 不再是必须的依赖。
+
 ## 0.1.0 - 2023-08-14
 
 ### Added

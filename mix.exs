@@ -37,8 +37,8 @@ defmodule SimpleOAuth.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:tesla, "~> 1.4"},
-      {:hackney, "~> 1.17"},
-      {:jason, ">= 1.0.0"}
+      {:hackney, "~> 1.17", optional: true},
+      {:jason, "~> 1.0"}
     ]
   end
 
