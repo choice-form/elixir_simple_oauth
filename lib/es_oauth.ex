@@ -1,2 +1,2 @@
-defmodule ESOauth do
+defmodule SimpleOAuth do
 end

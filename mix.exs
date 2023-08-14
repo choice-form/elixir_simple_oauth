@@ -1,4 +1,4 @@
-defmodule ESOauth.MixProject do
+defmodule SimpleOAuth.MixProject do
   use Mix.Project
 
   @version "0.0.1"
@@ -21,7 +21,7 @@ defmodule ESOauth.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ESOauth.Application, []}
+      mod: {SimpleOAuth.Application, []}
     ]
   end
 
