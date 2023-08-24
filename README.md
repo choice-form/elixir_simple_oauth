@@ -29,17 +29,8 @@ config :simple_oauth,
 
 ## Usage
 
-### Google
+`SimpleOAuth.get_user_info(provider, code, runtime_config \\ compile_config)`
 
-There are 3 main context apis (under `SimpleOAuth.Google`):
+### Supported providers
 
-1. `oauth_url/0`/`oauth_url/1` - login google account and google will call the callback api;
-2. `token/0`/`token/1` - get token (include `access_token`) by the callback request;
-3. `user_info/1` - get user info (include email/name/avatar and ect.) by `access_token`.
-
-To get user info by the callback api request (`code` is the parameter):
-
-```elixir
-    {:ok, token} = SimpleOAuth.Google.token(code)
-    {:ok, profile} = SimpleOAuth.Google.user_info(token["access_token"])
-```
+- google
