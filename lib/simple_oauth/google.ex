@@ -4,6 +4,16 @@ defmodule SimpleOAuth.Google do
   # https://developers.google.com/identity/protocols/oauth2/web-server
   @auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
 
+  @behaviour SimpleOAuth.API
+
+  @impl true
+  def get_user_info(code, config \\ config()) do
+    with {:ok, %{"access_token" => access_token}} <- token(code, config),
+         {:ok, user_info} <- user_info(access_token) do
+      {:ok, user_info}
+    end
+  end
+
   def oauth_url(config \\ config()) do
     query = %{
       client_id: Keyword.fetch!(config, :client_id),
@@ -16,14 +26,14 @@ defmodule SimpleOAuth.Google do
     "#{@auth_url}&#{params}"
   end
 
-  def user_info(token) do
+  defp user_info(token) do
     case OAuthClient.user_info(token) do
       {:ok, resp_body} -> {:ok, resp_body}
       :error -> {:error, :get_google_user_info_error}
     end
   end
 
-  def token(code, config \\ config()) do
+  defp token(code, config) do
     req_body =
       %{
         client_id: config[:client_id],
