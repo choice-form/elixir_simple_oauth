@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- [API] `SimpleOAuth.get_user_info/3`
+
 ## 0.1.1 - 2023-08-14
 
 ### Changed
