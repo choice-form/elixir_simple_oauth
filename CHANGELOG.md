@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- [Wechat] 增加微信网页登录。
+- [Wechat] 增加微信应用登录。
+
 ### Changed
 
 - [API] `SimpleOAuth.get_user_info/3`

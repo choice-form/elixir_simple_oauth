@@ -3,6 +3,7 @@
 The following platform logins are supported:
 
 - Google
+- Wechat(APP/Web)
 
 ## Configurations
 
@@ -27,6 +28,25 @@ config :simple_oauth,
   ]
 ```
 
+### Wechat
+
+```elixir
+config :simple_oauth,
+  [
+    wechat_web: [
+      appid: {appid},
+      secret: {secret}
+    ]
+  ]
+
+  [
+    wechat_app: [
+      appid: {appid},
+      secret: {secret}
+    ]
+  ]
+```
+
 ## Usage
 
 `SimpleOAuth.get_user_info(provider, code, runtime_config \\ compile_config)`
@@ -34,3 +54,5 @@ config :simple_oauth,
 ### Supported providers
 
 - google
+- wechat_app
+- wechat_web
