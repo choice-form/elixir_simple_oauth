@@ -8,6 +8,7 @@
 
 - [Wechat] 增加微信网页登录。
 - [Wechat] 增加微信应用登录。
+- [QQ] 增加 QQ 登录。
 
 ### Changed
 
