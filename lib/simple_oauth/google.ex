@@ -1,5 +1,5 @@
 defmodule SimpleOAuth.Google do
-  alias SimpleOAuth.Google.OAuthClient
+  alias SimpleOAuth.Google.Client
 
   # https://developers.google.com/identity/protocols/oauth2/web-server
   @auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
@@ -27,7 +27,7 @@ defmodule SimpleOAuth.Google do
   end
 
   defp user_info(token) do
-    case OAuthClient.user_info(token) do
+    case Client.user_info(token) do
       {:ok, resp_body} -> {:ok, resp_body}
       :error -> {:error, :get_google_user_info_error}
     end
@@ -43,7 +43,7 @@ defmodule SimpleOAuth.Google do
         code: code
       }
 
-    case OAuthClient.token(req_body) do
+    case Client.token(req_body) do
       {:ok, resp_body} -> {:ok, resp_body}
       :error -> {:error, :get_google_token_error}
     end
