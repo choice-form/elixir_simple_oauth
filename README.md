@@ -5,6 +5,7 @@ The following platform logins are supported:
 - Google
 - Wechat(APP/Web)
 - QQ
+- SGM
 
 ## Configurations
 
@@ -43,6 +44,20 @@ config :simple_oauth,
   ]
 ```
 
+### SGM
+
+```elixir
+config :simple_oauth,
+  [
+    sgm: [
+      client_id: {client_id},
+      client_secret: {client_secret},
+      host: {host},
+      callback_path: {callback_path}, default: "/oauth/sgm/callback"
+    ]
+  ]
+```
+
 ### Wechat
 
 ```elixir
@@ -72,3 +87,4 @@ config :simple_oauth,
 - wechat_app
 - wechat_web
 - qq
+- sgm
