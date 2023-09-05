@@ -5,7 +5,7 @@ defmodule SimpleOAuth.WechatTest do
 
   alias SimpleOAuth.Wechat
 
-  describe "get_user_info/2 for wechat_app" do
+  describe "get_user_info/2" do
     test "success" do
       user_info = %{
         "openid" => "openid",
