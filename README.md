@@ -4,6 +4,7 @@ The following platform logins are supported:
 
 - Google
 - Wechat(APP/Web)
+- QQ
 
 ## Configurations
 
@@ -70,3 +71,4 @@ config :simple_oauth,
 - google
 - wechat_app
 - wechat_web
+- qq

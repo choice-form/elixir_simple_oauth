@@ -3,7 +3,8 @@ defmodule SimpleOAuth do
     # %{provider => {adapter, module}}
     "google" => {:google, SimpleOAuth.Google},
     "wechat_app" => {:wechat_app, SimpleOAuth.Wechat},
-    "wechat_web" => {:wechat_web, SimpleOAuth.Wechat}
+    "wechat_web" => {:wechat_web, SimpleOAuth.Wechat},
+    "qq" => {:qq, SimpleOAuth.QQ}
   }
 
   @supported_providers Map.keys(@supported_provider_adapters)
