@@ -28,6 +28,20 @@ config :simple_oauth,
   ]
 ```
 
+### QQ
+
+```elixir
+config :simple_oauth,
+  [
+    qq: [
+      client_id: {client_id},
+      client_secret: {client_secret},
+      host: {host},
+      callback_path: {callback_path}, default: "/oauth/qq/callback"
+    ]
+  ]
+```
+
 ### Wechat
 
 ```elixir
