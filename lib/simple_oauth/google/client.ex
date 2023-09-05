@@ -1,4 +1,4 @@
-defmodule SimpleOAuth.Google.OAuthClient do
+defmodule SimpleOAuth.Google.Client do
   use Tesla
 
   defguardp is_2xx(term) when is_integer(term) and term >= 200 and term <= 299
