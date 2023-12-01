@@ -43,7 +43,7 @@ defmodule SimpleOAuth.MixProject do
   end
 
   defp github_url do
-    "https://github.com/choice-form/es_oauth.git"
+    "https://github.com/choice-form/elixir_simple_oauth.git"
   end
 
   defp description do
