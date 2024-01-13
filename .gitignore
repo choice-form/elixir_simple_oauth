@@ -24,3 +24,5 @@ simple_oauth-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+config/*.secret.exs
