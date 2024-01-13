@@ -20,4 +20,18 @@ defmodule SimpleOAuth do
     config = config || config!(adapter)
     module.get_user_info(code, config)
   end
+
+  def token_server_childrens do
+    @supported_provider_adapters
+    |> Enum.filter(fn {_provider, {adapter_name, adapter_module}} ->
+      has_config?(adapter_name) and adapter_module.need_token_server
+    end)
+    |> Enum.map(fn {_provider, {_adapter_name, adapter_module}} ->
+      adapter_module.token_server_spec()
+    end)
+  end
+
+  def has_config?(adapter_name) do
+    !!Application.get_env(:simple_oauth, adapter_name)
+  end
 end
