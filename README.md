@@ -6,6 +6,7 @@ The following platform logins are supported:
 - Wechat(APP/Web)
 - QQ
 - SGM
+- Lark
 
 ## Configurations
 
@@ -15,6 +16,19 @@ Setup runtime configuration.
 config :simple_oauth, [keyword configurations]
 ```
 
+### Lark
+
+```elixir
+config :simple_oauth,
+  [
+    lark: [
+      app_id: {client_id},
+      app_secret: {client_secret},
+      host: {host},
+      callback_path: {callback_path}, default: "/oauth/lark/callback"
+    ]
+  ]
+```
 ### Google
 
 ```elixir
@@ -88,3 +102,4 @@ config :simple_oauth,
 - wechat_web
 - qq
 - sgm
+- lark
