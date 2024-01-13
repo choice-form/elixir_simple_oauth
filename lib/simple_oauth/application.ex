@@ -10,6 +10,7 @@ defmodule SimpleOAuth.Application do
     children = [
       # Starts a worker by calling: SimpleOAuth.Worker.start_link(arg)
       # {SimpleOAuth.Worker, arg}
+      SimpleOAuth.TokenSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
