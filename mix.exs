@@ -40,6 +40,7 @@ defmodule SimpleOAuth.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:tesla, "~> 1.4"},
+      {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:hackney, "~> 1.17", optional: true},
       {:jason, "~> 1.0"}
     ]
