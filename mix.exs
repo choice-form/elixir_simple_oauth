@@ -20,10 +20,13 @@ defmodule SimpleOAuth.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: extra_applications(Mix.env()),
       mod: {SimpleOAuth.Application, []}
     ]
   end
+
+  defp extra_applications(:dev), do: [:logger, :observer, :wx, :runtime_tools]
+  defp extra_applications(_), do: [:logger]
 
   defp package do
     [
