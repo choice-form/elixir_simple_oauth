@@ -8,6 +8,9 @@ defmodule SimpleOAuth.Lark do
   # NOTE https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/authen-v1/login-overview
 
   @impl true
+  def need_token_server, do: true
+
+  @impl true
   def get_user_info(_code, _config \\ config()) do
   end
 
