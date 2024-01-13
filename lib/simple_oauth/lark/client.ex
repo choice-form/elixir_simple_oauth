@@ -12,6 +12,24 @@ defmodule SimpleOAuth.Lark.Client do
     end
   end
 
+  def token(body, headers) do
+    client()
+    |> post("/authen/v1/oidc/access_token", body, headers: headers)
+    |> case do
+      {:ok, %{status: status, body: body}} when is_2xx(status) -> {:ok, body}
+      _ -> :error
+    end
+  end
+
+  def user_info(token) do
+    client()
+    |> get("/authen/v1/user_info", headers: [{"authorization", "Bearer #{token}"}])
+    |> case do
+      {:ok, %{status: status, body: body}} when is_2xx(status) -> {:ok, body}
+      _ -> :error
+    end
+  end
+
   def client do
     middleware = [
       {Tesla.Middleware.BaseUrl, "https://open.feishu.cn/open-apis"},
