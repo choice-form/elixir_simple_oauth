@@ -11,6 +11,12 @@ defmodule SimpleOAuth.Lark do
   def need_token_server, do: true
 
   @impl true
+  def token_server_spec do
+    module = __MODULE__.TokenServer
+    %{id: module, start: {module, :start_link, [config()]}}
+  end
+
+  @impl true
   def get_user_info(_code, _config \\ config()) do
   end
 
