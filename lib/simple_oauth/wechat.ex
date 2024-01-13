@@ -4,6 +4,9 @@ defmodule SimpleOAuth.Wechat do
   alias SimpleOAuth.Wechat.Client
 
   @impl true
+  def need_token_server, do: false
+
+  @impl true
   def get_user_info(code, config \\ config()) do
     with {:ok, %{"access_token" => access_token, "openid" => openid}} <- token(code, config),
          {:ok, user_info} <- user_info(access_token, openid) do
