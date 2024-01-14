@@ -32,7 +32,15 @@ defmodule SimpleOAuth.Lark.TokenServer do
           {token, state}
       end
 
-    {:reply, {:ok, app_access_token}, new_state}
+    {:reply, {:ok, token}, Map.put(state, key, token)}
+  end
+
+  def handle_call(:get_state, _from, state) do
+    {:reply, state, state}
+  end
+
+  def handle_call({:set_state, state}, _from, _state) do
+    {:reply, :ok, state}
   end
 
   def handle_info({:clear_cache, key}, state) do
