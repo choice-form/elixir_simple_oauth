@@ -23,9 +23,9 @@ defmodule SimpleOAuth.Lark do
   def get_user_info(code, config \\ config()) do
     with {:ok, app_access_token} <-
            TokenServer.app_access_token(config[:app_id], config[:app_secret]),
-         {:ok, %{"data" => %{"access_token" => access_token}}} <-
+         {:ok, %{"access_token" => access_token}} <-
            token(code, app_access_token, config),
-         {:ok, %{"data" => user_info}} <- Client.user_info(access_token) do
+         {:ok, user_info} <- Client.user_info(access_token) do
       {:ok, user_info}
     end
   end
