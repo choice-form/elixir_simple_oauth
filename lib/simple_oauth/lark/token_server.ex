@@ -34,7 +34,7 @@ defmodule SimpleOAuth.Lark.TokenServer do
             Client.app_access_token(app_id, app_secret)
 
           # NOTE 为了测试
-          if state.test do
+          if state[:test_flag] do
             Process.send(__MODULE__, {key, expire - @expires_before}, [])
           end
 

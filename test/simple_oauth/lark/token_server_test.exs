@@ -7,7 +7,7 @@ defmodule SimpleOAuth.Lark.TokenServerTest do
 
   setup do
     TokenServer.start_link([])
-    TokenServer.set_state(%{test: true})
+    TokenServer.set_state(%{test_flag: true})
 
     :ok
   end
