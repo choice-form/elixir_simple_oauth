@@ -33,6 +33,11 @@ defmodule SimpleOAuth.Lark.TokenServer do
           {:ok, %{"app_access_token" => token, "expire" => expire}} =
             Client.app_access_token(app_id, app_secret)
 
+          # NOTE 为了测试
+          if state.test do
+            Process.send(__MODULE__, {key, expire - @expires_before}, [])
+          end
+
           send_clear_signal(key, expire - @expires_before)
           token
 
@@ -53,6 +58,10 @@ defmodule SimpleOAuth.Lark.TokenServer do
 
   def handle_info({:clear_cache, key}, state) do
     {:noreply, Map.delete(state, key)}
+  end
+
+  def handle_info({_key, _expires_in} = value, state) do
+    {:noreply, Map.put(state, :test_signal, value)}
   end
 
   defp send_clear_signal(key, expires_in) do

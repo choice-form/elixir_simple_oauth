@@ -7,7 +7,7 @@ defmodule SimpleOAuth.Lark.TokenServerTest do
 
   setup do
     TokenServer.start_link([])
-    TokenServer.set_state(%{})
+    TokenServer.set_state(%{test: true})
 
     :ok
   end
@@ -29,6 +29,8 @@ defmodule SimpleOAuth.Lark.TokenServerTest do
 
     assert {:ok, "token"} = TokenServer.app_access_token("app_id", "app_secret")
     assert %{app_access_token: "token"} = TokenServer.get_state()
+    # test clear cache signal
+    assert %{test_signal: {:app_access_token, 6300}} = TokenServer.get_state()
   end
 
   test "use cached value first" do
