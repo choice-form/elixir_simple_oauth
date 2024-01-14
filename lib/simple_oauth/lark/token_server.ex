@@ -6,30 +6,38 @@ defmodule SimpleOAuth.Lark.TokenServer do
   # 提前 15 分钟过期
   @expires_before 900
 
-  def app_access_token do
-    GenServer.call(__MODULE__, :app_access_token)
+  def app_access_token(app_id, app_secret) do
+    GenServer.call(__MODULE__, {:app_access_token, app_id, app_secret})
   end
 
-  def start_link(config) do
-    GenServer.start_link(__MODULE__, config, name: __MODULE__)
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
-  def init(config) do
-    {:ok, %{config: config, cached: %{}}}
+  def set_state(state) do
+    GenServer.call(__MODULE__, {:set_state, state})
   end
 
-  def handle_call(:app_access_token = key, _from, %{config: config} = state) do
-    {app_access_token, new_state} =
-      case read_from_cache(key, state) do
+  def get_state do
+    GenServer.call(__MODULE__, :get_state)
+  end
+
+  def init(_) do
+    {:ok, %{}}
+  end
+
+  def handle_call({:app_access_token = key, app_id, app_secret}, _from, state) do
+    token =
+      case state[key] do
         nil ->
           {:ok, %{"app_access_token" => token, "expire" => expire}} =
-            Client.app_access_token(config[:app_id], config[:app_secret])
+            Client.app_access_token(app_id, app_secret)
 
           send_clear_signal(key, expire - @expires_before)
-          {token, update_cache({key, token}, state)}
+          token
 
         token ->
-          {token, state}
+          token
       end
 
     {:reply, {:ok, token}, Map.put(state, key, token)}
@@ -44,14 +52,7 @@ defmodule SimpleOAuth.Lark.TokenServer do
   end
 
   def handle_info({:clear_cache, key}, state) do
-    new_state = %{state | cached: Map.delete(state.cached, key)}
-    {:noreply, new_state}
-  end
-
-  defp read_from_cache(key, state), do: state.cached[key]
-
-  defp update_cache({key, value}, state) do
-    %{state | cached: Map.put(state.cached, key, value)}
+    {:noreply, Map.delete(state, key)}
   end
 
   defp send_clear_signal(key, expires_in) do
