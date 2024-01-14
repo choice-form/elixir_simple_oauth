@@ -7,7 +7,8 @@ defmodule SimpleOAuth.Lark.Client do
     client()
     |> post("/auth/v3/app_access_token/internal", %{app_id: app_id, app_secret: app_secret})
     |> case do
-      {:ok, %{status: status, body: body}} when is_2xx(status) -> {:ok, body}
+      {:ok, %{status: status, body: %{"code" => 0} = body}} when is_2xx(status) -> {:ok, body}
+      {:ok, %{body: body}} -> {:error, body}
       _ -> :error
     end
   end
@@ -16,8 +17,14 @@ defmodule SimpleOAuth.Lark.Client do
     client()
     |> post("/authen/v1/oidc/access_token", body, headers: headers)
     |> case do
-      {:ok, %{status: status, body: body}} when is_2xx(status) -> {:ok, body}
-      _ -> :error
+      {:ok, %{status: status, body: %{"code" => 0, "data" => body}}} when is_2xx(status) ->
+        {:ok, body}
+
+      {:ok, %{body: body}} ->
+        {:error, body}
+
+      _ ->
+        :error
     end
   end
 
@@ -25,8 +32,14 @@ defmodule SimpleOAuth.Lark.Client do
     client()
     |> get("/authen/v1/user_info", headers: [{"authorization", "Bearer #{token}"}])
     |> case do
-      {:ok, %{status: status, body: body}} when is_2xx(status) -> {:ok, body}
-      _ -> :error
+      {:ok, %{status: status, body: %{"code" => 0, "data" => body}}} when is_2xx(status) ->
+        {:ok, body}
+
+      {:ok, %{body: body}} ->
+        {:error, body}
+
+      _ ->
+        :error
     end
   end
 
