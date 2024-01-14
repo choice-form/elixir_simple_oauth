@@ -16,7 +16,7 @@ defmodule SimpleOAuth.Lark do
   @impl true
   def token_server_spec do
     module = __MODULE__.TokenServer
-    %{id: module, start: {module, :start_link, []}}
+    %{id: module, start: {module, :start_link, [nil]}}
   end
 
   @impl true
