@@ -42,7 +42,8 @@ defmodule SimpleOAuth.MixProject do
       {:tesla, "~> 1.4"},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:hackney, "~> 1.17", optional: true},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:hlclock, "~> 1.0"}
     ]
   end
 
