@@ -11,15 +11,6 @@ defmodule SimpleOAuth.Lark do
   alias SimpleOAuth.Lark.Client
 
   @impl true
-  def need_token_server, do: true
-
-  @impl true
-  def token_server_spec do
-    module = __MODULE__.TokenServer
-    %{id: module, start: {module, :start_link, [nil]}}
-  end
-
-  @impl true
   def get_user_info(code, config \\ config()) do
     with {:ok, app_access_token} <-
            TokenServer.app_access_token(config[:app_id], config[:app_secret]),
