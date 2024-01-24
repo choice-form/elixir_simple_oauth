@@ -7,8 +7,6 @@ defmodule SimpleOAuth.QQ do
   alias SimpleOAuth.QQ.Client
 
   @impl true
-  def need_token_server, do: false
-  @impl true
   def get_user_info(code, config \\ config()) do
     with {:ok, access_token} <- token(code, config),
          {:ok, openid} <- openid(access_token),
