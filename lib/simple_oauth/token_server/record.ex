@@ -1,6 +1,6 @@
 defmodule SimpleOAuth.TokenServer.Record do
   @enforce_keys [:provider, :key, :value]
-  defstruct [:provider, :key, :value, :expires_in, :updated_at]
+  defstruct [:provider, :key, :value, :expires_in, :updated_at, :fetcher]
 
   # 提前 20 分钟进入即将失效状态，需要安排延迟刷新
   @expiring_interval 1200
