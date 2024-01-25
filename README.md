@@ -14,6 +14,10 @@ Setup runtime configuration.
 
 ```elixir
 config :simple_oauth, [keyword configurations]
+
+# global config, for token server broadcast
+config :simple_oauth,
+  cluster_prefix: ""
 ```
 
 ### Lark
