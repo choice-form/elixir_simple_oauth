@@ -1,7 +1,7 @@
-defmodule SimpleOAuth.TokenCache.RecordTest do
+defmodule SimpleOAuth.TokenServer.RecordTest do
   use ExUnit.Case, async: true
 
-  alias SimpleOAuth.TokenCache.Record
+  alias SimpleOAuth.TokenServer.Record
 
   describe "new/1" do
     test "success set updated_at with hlc timestamp" do
