@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- [TokenServer] 基础的分布式 token 缓存机制。
+
 ## 0.4.0 - 2024-01-14
 
 ### Added
