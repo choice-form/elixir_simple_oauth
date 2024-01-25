@@ -7,13 +7,14 @@ defmodule SimpleOAuth.Lark do
 
   # NOTE https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/authen-v1/login-overview
 
-  alias SimpleOAuth.Lark.TokenServer
+  alias SimpleOAuth.TokenServer
   alias SimpleOAuth.Lark.Client
+  alias SimpleOAuth.TokenServer.Record
 
   @impl true
   def get_user_info(code, config \\ config()) do
     with {:ok, app_access_token} <-
-           TokenServer.app_access_token(config[:app_id], config[:app_secret]),
+           get_token("app_access_token", fn -> app_access_token(config) end),
          {:ok, %{"access_token" => access_token}} <-
            token(code, app_access_token, config),
          {:ok, user_info} <- Client.user_info(access_token) do
@@ -63,5 +64,26 @@ defmodule SimpleOAuth.Lark do
 
   defp default_config do
     [callback_path: "oauth/lark/callback"]
+  end
+
+  def get_token(key, fetcher), do: TokenServer.get("lark", key, fetcher)
+
+  def app_access_token(config) do
+    case Client.app_access_token(config[:app_id], config[:app_secret]) do
+      {:ok, %{"app_access_token" => token, "expire" => expires_in}} ->
+        {:ok,
+         Record.new(%{
+           provider: "lark",
+           key: "app_access_token",
+           value: token,
+           expires_in: expires_in
+         })}
+
+      {:error, _} = err ->
+        err
+
+      :error ->
+        {:error, :client_request_error}
+    end
   end
 end
