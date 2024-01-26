@@ -15,20 +15,15 @@ defmodule SimpleOAuth.TokenServerTest do
       assert [] = ExUnitCluster.call(cluster, node_1, TokenServer, :state, [])
     end
 
-    # NOTE ExUnitCluster doesn't support connect to the other nodes in same cluster automatically.
-    # The GenServer complete the startup process without connected nodes.
-    # So the synchronization doesn't effective.
+    test "sync state from cluster", %{cluster: cluster} do
+      node_1 = ExUnitCluster.start_node(cluster)
+      records = [Record.new(%{provider: "lark", key: "app_access_token", value: "token"})]
+      assert :ok = ExUnitCluster.call(cluster, node_1, TokenServer, :state, [records])
 
-    # test "sync state from cluster", %{cluster: cluster} do
-    #   node_1 = ExUnitCluster.start_node(cluster)
-    #   records = [Record.new(%{provider: "lark", key: "app_access_token", value: "token"})]
-    #   ExUnitCluster.call(cluster, node_1, TokenServer, :state, [records])
-
-    #   assert ^records = ExUnitCluster.call(cluster, node_1, TokenServer, :state, [])
-    #   node_2 = start_connected_node(cluster, node_1)
-    #   ExUnitCluster.call(cluster, node_2, Node, :list, []) |> IO.inspect()
-    #   assert ^records = ExUnitCluster.call(cluster, node_2, TokenServer, :state, [])
-    # end
+      assert ^records = ExUnitCluster.call(cluster, node_1, TokenServer, :state, [])
+      node_2 = ExUnitCluster.start_node(cluster)
+      assert ^records = ExUnitCluster.call(cluster, node_2, TokenServer, :state, [])
+    end
   end
 
   describe "working with the isolated node itself" do
@@ -105,13 +100,13 @@ defmodule SimpleOAuth.TokenServerTest do
   describe "working with cluster" do
     test "get new value and cache it by sync state from other nodes", %{cluster: cluster} do
       node_1 = ExUnitCluster.start_node(cluster)
+      # node 2 started before set state for node_1, to avoid sync state from node_1
+      node_2 = ExUnitCluster.start_node(cluster)
 
       record =
         Record.new(%{provider: "lark", key: "app_access_token", value: "token", expires_in: 7200})
 
       assert :ok = ExUnitCluster.call(cluster, node_1, TokenServer, :state, [[record]])
-
-      node_2 = start_connected_node(cluster, node_1)
 
       assert [] = ExUnitCluster.call(cluster, node_2, TokenServer, :state, [])
 
@@ -131,7 +126,7 @@ defmodule SimpleOAuth.TokenServerTest do
       cluster: cluster
     } do
       node_1 = ExUnitCluster.start_node(cluster)
-      node_2 = start_connected_node(cluster, node_1)
+      node_2 = ExUnitCluster.start_node(cluster)
 
       record =
         Record.new(%{provider: "lark", key: "app_access_token", value: "token", expires_in: 7200})
@@ -155,7 +150,7 @@ defmodule SimpleOAuth.TokenServerTest do
     test "get new value and cache it by running fetcher if record expired then sync it to other nodes",
          %{cluster: cluster} do
       node_1 = ExUnitCluster.start_node(cluster)
-      node_2 = start_connected_node(cluster, node_1)
+      node_2 = ExUnitCluster.start_node(cluster)
 
       record =
         Record.new(%{provider: "lark", key: "app_access_token", value: "token", expires_in: 7200})
@@ -179,12 +174,6 @@ defmodule SimpleOAuth.TokenServerTest do
       assert [^new_record] = ExUnitCluster.call(cluster, node_1, TokenServer, :state, [])
       assert [^new_record] = ExUnitCluster.call(cluster, node_2, TokenServer, :state, [])
     end
-  end
-
-  defp start_connected_node(cluster, base_node) do
-    new_node = ExUnitCluster.start_node(cluster)
-    ExUnitCluster.call(cluster, new_node, Node, :connect, [base_node])
-    new_node
   end
 
   defp set_expired(%{updated_at: updated_at} = record) do
