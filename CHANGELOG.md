@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## 0.5.1 - 2024-02-20
+
+### Added
+
+- [TokenServer] 增加独立节点模式，不再进行 hlc clock 的处理。
+
 ## 0.5.0 - 2024-02-20
 
 ### Changed
