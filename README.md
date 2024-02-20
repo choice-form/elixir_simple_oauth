@@ -17,7 +17,10 @@ config :simple_oauth, [keyword configurations]
 
 # global config, for token server broadcast
 config :simple_oauth,
-  cluster_prefix: ""
+  cluster_prefix: "",
+  # default to false
+  # if distributed, use hlc clock in cluster to keep token updated
+  distributed: {boolean}
 ```
 
 ### Lark

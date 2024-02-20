@@ -1,8 +1,6 @@
 defmodule SimpleOAuth.TokenServer do
   use GenServer
 
-  alias SimpleOAuth.TokenServer.Context
-
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
@@ -25,7 +23,7 @@ defmodule SimpleOAuth.TokenServer do
   end
 
   def handle_continue(_arg, _state) do
-    new_state = Context.sync_from_other_nodes()
+    new_state = mod().sync_from_other_nodes()
 
     {:noreply, new_state}
   end
@@ -41,16 +39,16 @@ defmodule SimpleOAuth.TokenServer do
   def handle_call({:get, provider, key, fetcher}, _from, state) do
     state =
       case state do
-        [] -> Context.sync_from_other_nodes()
+        [] -> mod().sync_from_other_nodes()
         _ -> state
       end
 
-    case Context.get_record(provider, key, state) do
+    case mod().get_record(provider, key, state) do
       {:ok, nil} ->
         {returning, new_state} =
-          case Context.fetch_and_broadcast_cache(fetcher) do
+          case mod().fetch_and_broadcast_cache(fetcher) do
             {:ok, record} ->
-              new_state = Context.update_record_if_needed(record, state)
+              new_state = mod().update_record_if_needed(record, state)
               {{:ok, record.value}, new_state}
 
             {:error, _} = err ->
@@ -60,7 +58,7 @@ defmodule SimpleOAuth.TokenServer do
         {:reply, returning, new_state}
 
       {:ok, record, seconds} ->
-        Context.renew_record_in(record, seconds)
+        mod().renew_record_in(record, seconds)
         {:reply, {:ok, record.value}, state}
 
       {:ok, record} ->
@@ -69,21 +67,29 @@ defmodule SimpleOAuth.TokenServer do
   end
 
   def handle_call({:set, record}, _from, state) do
-    new_state = Context.update_record_if_needed(record, state)
+    new_state = mod().update_record_if_needed(record, state)
     {:reply, :ok, new_state}
   end
 
   def handle_info({:renew, record}, state) do
     new_state =
-      case Context.fetch_and_broadcast_cache(record) do
+      case mod().fetch_and_broadcast_cache(record) do
         {:ok, record} ->
-          Context.update_record_if_needed(record, state)
+          mod().update_record_if_needed(record, state)
 
         {:error, _} ->
-          Context.renew_record_in_1_minute(record)
+          mod().renew_record_in_1_minute(record)
           state
       end
 
     {:noreply, new_state}
+  end
+
+  defp mod do
+    if Application.get_env(:simple_oauth, :distributed, false) do
+      SimpleOAuth.TokenServer.Context
+    else
+      SimpleOAuth.TokenServer.IsolateContext
+    end
   end
 end
