@@ -25,10 +25,10 @@ defmodule SimpleOAuth.Lark do
   defp token(code, app_access_token, _config) do
     req_body = %{grant_type: "authorization_code", code: code}
 
-    headers = [
-      {"Authorization", "Bearer #{app_access_token}"},
-      {"content-type", "application/json; charset=utf-8"}
-    ]
+    headers = %{
+      "Authorization" => "Bearer #{app_access_token}",
+      "content-type" => "application/json; charset=utf-8"
+    }
 
     case Client.token(req_body, headers) do
       {:ok, resp_body} -> {:ok, resp_body}
