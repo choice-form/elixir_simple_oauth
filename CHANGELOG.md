@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## 0.6.0 - 2024-09-30
+
 ### Changed
 
 - [Deps] 使用 `req` 替代 `tesla` 。
