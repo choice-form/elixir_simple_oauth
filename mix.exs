@@ -39,9 +39,8 @@ defmodule SimpleOAuth.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:tesla, "~> 1.4"},
+      {:req, "~> 0.5.0"},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
-      {:hackney, "~> 1.17", optional: true},
       {:jason, "~> 1.0"},
       {:hlclock, "~> 1.0"},
       {:ex_unit_cluster, "~> 0.4", only: [:test]}
