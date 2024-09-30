@@ -1,4 +1,5 @@
 defmodule SimpleOAuth.Lark.Client do
+  alias SimpleOAuth.Utils
   defguardp is_2xx(term) when is_integer(term) and term >= 200 and term <= 299
 
   def app_access_token(app_id, app_secret) do
@@ -52,6 +53,8 @@ defmodule SimpleOAuth.Lark.Client do
   end
 
   def client do
-    Req.new(base_url: "https://open.feishu.cn/open-apis", retry: false)
+    [base_url: "https://open.feishu.cn/open-apis", retry: false]
+    |> Utils.merge_req_mock_option(:lark)
+    |> Req.new()
   end
 end

@@ -43,6 +43,7 @@ defmodule SimpleOAuth.MixProject do
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:jason, "~> 1.0"},
       {:hlclock, "~> 1.0"},
+      {:plug, "~> 1.0", only: [:test], optional: true},
       {:ex_unit_cluster, "~> 0.4", only: [:test]}
     ]
   end

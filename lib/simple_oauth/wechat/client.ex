@@ -1,4 +1,5 @@
 defmodule SimpleOAuth.Wechat.Client do
+  alias SimpleOAuth.Utils
   defguardp is_2xx(term) when is_integer(term) and term >= 200 and term <= 299
 
   def user_info(params) do
@@ -20,6 +21,8 @@ defmodule SimpleOAuth.Wechat.Client do
   end
 
   defp client() do
-    Req.new(base_url: "https://api.weixin.qq.com/sns", retry: false)
+    [base_url: "https://api.weixin.qq.com/sns", retry: false]
+    |> Utils.merge_req_mock_option(:wechat)
+    |> Req.new()
   end
 end
