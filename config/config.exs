@@ -1,6 +1,13 @@
 import Config
 
-config :tesla, adapter: Tesla.Adapter.Hackney
+config :simple_oauth,
+  req_mocks: [
+    qq: [],
+    google: [],
+    sgm: [],
+    lark: [],
+    wechat: []
+  ]
 
 if "#{Mix.env()}.exs" |> Path.expand(__DIR__) |> File.exists?() do
   import_config "#{Mix.env()}.exs"

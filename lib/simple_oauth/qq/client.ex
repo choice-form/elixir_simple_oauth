@@ -1,4 +1,5 @@
 defmodule SimpleOAuth.QQ.Client do
+  alias SimpleOAuth.Utils
   defguardp is_2xx(term) when is_integer(term) and term >= 200 and term <= 299
 
   def user_info(params) do
@@ -15,7 +16,10 @@ defmodule SimpleOAuth.QQ.Client do
 
   def openid(params) do
     client()
-    |> Req.get(url: "/oauth2.0/me" <> "?" <> URI.encode_query(params, :rfc3986), decode_body: false)
+    |> Req.get(
+      url: "/oauth2.0/me" <> "?" <> URI.encode_query(params, :rfc3986),
+      decode_body: false
+    )
     |> case do
       {:ok, %Req.Response{status: status, body: body}} when is_2xx(status) ->
         openid =
@@ -33,7 +37,10 @@ defmodule SimpleOAuth.QQ.Client do
 
   def token(params) do
     client()
-    |> Req.get(url: "/oauth2.0/token" <> "?" <> URI.encode_query(params, :rfc3986), decode_body: false)
+    |> Req.get(
+      url: "/oauth2.0/token" <> "?" <> URI.encode_query(params, :rfc3986),
+      decode_body: false
+    )
     |> case do
       {:ok, %Req.Response{status: status, body: body}} when is_2xx(status) ->
         token =
@@ -51,6 +58,8 @@ defmodule SimpleOAuth.QQ.Client do
   end
 
   defp client() do
-    Req.new(base_url: "https://graph.qq.com", retry: false)
+    [base_url: "https://graph.qq.com", retry: false]
+    |> Utils.merge_req_mock_option(:qq)
+    |> Req.new()
   end
 end

@@ -1,4 +1,5 @@
 defmodule SimpleOAuth.Google.Client do
+  alias SimpleOAuth.Utils
   defguardp is_2xx(term) when is_integer(term) and term >= 200 and term <= 299
 
   def user_info(token) do
@@ -22,10 +23,14 @@ defmodule SimpleOAuth.Google.Client do
   end
 
   defp client() do
-    Req.new(base_url: "https://oauth2.googleapis.com", retry: false)
+    [base_url: "https://oauth2.googleapis.com", retry: false]
+    |> Utils.merge_req_mock_option(:google)
+    |> Req.new()
   end
 
   defp client_v3() do
-    Req.new(base_url: "https://www.googleapis.com/oauth2/v3", retry: false)
+    [base_url: "https://www.googleapis.com/oauth2/v3", retry: false]
+    |> Utils.merge_req_mock_option(:google)
+    |> Req.new()
   end
 end

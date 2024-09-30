@@ -1,9 +1,9 @@
 defmodule SimpleOAuth.QQTest do
   use ExUnit.Case, async: true
 
-  import Tesla.Mock
-
   alias SimpleOAuth.QQ
+
+  setup {Req.Test, :verify_on_exit!}
 
   describe "get_user_info/2" do
     test "success" do
@@ -22,91 +22,88 @@ defmodule SimpleOAuth.QQTest do
         "gender" => "男"
       }
 
-      mock(fn
-        %{
-          method: :get,
-          url:
-            "https://graph.qq.com/oauth2.0/token?client_id=client_id&client_secret=client_secret&code=code&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fexample.com%2Foauth%2Fqq%2Fcallback"
-        } ->
-          %Tesla.Env{status: 200, body: "access_token=access_token&expires_in=3600"}
+      Req.Test.expect(
+        SimpleOAuth.QQClient,
+        3,
+        fn
+          %Plug.Conn{
+            method: "GET",
+            host: "graph.qq.com",
+            request_path: "/oauth2.0/token",
+            query_string:
+              "client_id=client_id&client_secret=client_secret&code=code&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fexample.com%2Foauth%2Fqq%2Fcallback"
+          } = conn ->
+            Req.Test.text(conn, "access_token=access_token&expires_in=3600")
 
-        %{
-          method: :get,
-          url: "https://graph.qq.com/oauth2.0/me?access_token=access_token"
-        } ->
-          %Tesla.Env{
-            status: 200,
-            body: "callback( {\"client_id\":\"client_id\",\"openid\":\"openid\"} );\n"
-          }
+          %Plug.Conn{
+            method: "GET",
+            host: "graph.qq.com",
+            request_path: "/oauth2.0/me",
+            query_string: "access_token=access_token"
+          } = conn ->
+            Req.Test.text(
+              conn,
+              "callback( {\"client_id\":\"client_id\",\"openid\":\"openid\"} );\n"
+            )
 
-        %{
-          method: :get,
-          url:
-            "https://graph.qq.com/user/get_user_info?access_token=access_token&openid=openid&oauth_consumer_key=client_id"
-        } ->
-          %Tesla.Env{status: 200, body: Jason.encode!(user_info)}
-      end)
+          %Plug.Conn{
+            method: "GET",
+            host: "graph.qq.com",
+            request_path: "/user/get_user_info",
+            query_string: "access_token=access_token&openid=openid&oauth_consumer_key=client_id"
+          } = conn ->
+            Req.Test.json(conn, user_info)
+        end
+      )
 
       user_info_with_openid = Map.put(user_info, "openid", "openid")
       assert {:ok, ^user_info_with_openid} = QQ.get_user_info("code", test_config())
     end
 
     test "returns {:error, :get_qq_token_error}" do
-      mock(fn
-        %{
-          method: :get,
-          url:
-            "https://graph.qq.com/oauth2.0/token?client_id=client_id&client_secret=client_secret&code=code&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fexample.com%2Foauth%2Fqq%2Fcallback"
-        } ->
-          %Tesla.Env{status: 500}
+      Req.Test.expect(SimpleOAuth.QQClient, fn %Plug.Conn{
+                                                 method: "GET",
+                                                 host: "graph.qq.com",
+                                                 request_path: "/oauth2.0/token"
+                                               } = conn ->
+        Plug.Conn.send_resp(conn, 500, "")
       end)
 
       assert {:error, :get_qq_token_error} = QQ.get_user_info("code", test_config())
     end
 
     test "returns {:error, :get_qq_openid_error}" do
-      mock(fn
-        %{
-          method: :get,
-          url:
-            "https://graph.qq.com/oauth2.0/token?client_id=client_id&client_secret=client_secret&code=code&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fexample.com%2Foauth%2Fqq%2Fcallback"
-        } ->
-          %Tesla.Env{status: 200, body: "access_token=access_token&expires_in=3600"}
+      Req.Test.expect(SimpleOAuth.QQClient, 2, fn
+        %Plug.Conn{method: "GET", host: "graph.qq.com", request_path: "/oauth2.0/token"} = conn ->
+          Req.Test.text(conn, "access_token=access_token&expires_in=3600")
 
-        %{
-          method: :get,
-          url: "https://graph.qq.com/oauth2.0/me?access_token=access_token"
-        } ->
-          %Tesla.Env{status: 500}
+        %Plug.Conn{method: "GET", host: "graph.qq.com", request_path: "/oauth2.0/me"} = conn ->
+          Plug.Conn.send_resp(conn, 500, "")
       end)
 
       assert {:error, :get_qq_openid_error} = QQ.get_user_info("code", test_config())
     end
 
     test "returns {:error, :get_user_info_error}" do
-      mock(fn
-        %{
-          method: :get,
-          url:
-            "https://graph.qq.com/oauth2.0/token?client_id=client_id&client_secret=client_secret&code=code&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fexample.com%2Foauth%2Fqq%2Fcallback"
-        } ->
-          %Tesla.Env{status: 200, body: "access_token=access_token&expires_in=3600"}
+      Req.Test.expect(SimpleOAuth.QQClient, 3, fn
+        %Plug.Conn{
+          method: "GET",
+          host: "graph.qq.com",
+          request_path: "/oauth2.0/token",
+          query_string:
+            "client_id=client_id&client_secret=client_secret&code=code&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fexample.com%2Foauth%2Fqq%2Fcallback"
+        } = conn ->
+          Req.Test.text(conn, "access_token=access_token&expires_in=3600")
 
-        %{
-          method: :get,
-          url: "https://graph.qq.com/oauth2.0/me?access_token=access_token"
-        } ->
-          %Tesla.Env{
-            status: 200,
-            body: "callback( {\"client_id\":\"client_id\",\"openid\":\"openid\"} );\n"
-          }
+        %Plug.Conn{method: "GET", host: "graph.qq.com", request_path: "/oauth2.0/me"} = conn ->
+          Req.Test.text(
+            conn,
+            "callback( {\"client_id\":\"client_id\",\"openid\":\"openid\"} );\n"
+          )
 
-        %{
-          method: :get,
-          url:
-            "https://graph.qq.com/user/get_user_info?access_token=access_token&openid=openid&oauth_consumer_key=client_id"
-        } ->
-          %Tesla.Env{status: 500}
+        %Plug.Conn{method: "GET", host: "graph.qq.com", request_path: "/user/get_user_info"} =
+            conn ->
+          Plug.Conn.send_resp(conn, 500, "")
       end)
 
       assert {:error, :get_qq_user_info_error} = QQ.get_user_info("code", test_config())
