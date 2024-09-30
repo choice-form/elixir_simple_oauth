@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- [Deps] 使用 `req` 替代 `tesla` 。
+
 ## 0.5.1 - 2024-02-20
 
 ### Added
