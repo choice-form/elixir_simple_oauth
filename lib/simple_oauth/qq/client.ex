@@ -25,7 +25,7 @@ defmodule SimpleOAuth.QQ.Client do
       {:ok, %{status: status, body: body}} when is_2xx(status) ->
         openid =
           body
-          |> String.slice(10..-5)
+          |> String.slice(10..-5//1)
           |> Jason.decode!()
           |> Map.fetch!("openid")
 
